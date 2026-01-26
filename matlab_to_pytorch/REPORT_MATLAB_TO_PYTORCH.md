@@ -7,7 +7,7 @@ Make the PyTorch implementation behavior identical to the MATLAB implementation.
 ## Source and Target
 
 - MATLAB project: `/data04/chengjin/DDsurfer/DDSeg/DDSeg-master`
-- PyTorch project: `/data04/chengjin/DDsurfer/DDSeg-pytorch-version`
+- PyTorch project: `/data04/chengjin/DDsurfer/DDSeg-PyTorch`
 
 ## Core MATLAB Pipeline (Reference)
 
@@ -137,7 +137,7 @@ This script runs the PyTorch pipeline and compares the outputs against the MATLA
 
 Files located in:
 
-`/data04/chengjin/DDsurfer/DDSeg-pytorch-version/MATLAB_2_pytorch`
+`/data04/chengjin/DDsurfer/DDSeg-PyTorch/matlab_to_pytorch`
 
 - `export_unet_to_onnx.m`
 - `batch_export_unet_to_onnx.m`

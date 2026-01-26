@@ -1,23 +1,35 @@
-# DDSeg PyTorch Version (Scaffold)
+# DDSeg-PyTorch
 
-This folder is a PyTorch-ready scaffold for DDSeg. It mirrors the MATLAB workflow but does **not** include converted weights yet.
+This repository provides a PyTorch implementation of DDSeg. It mirrors the MATLAB workflow and supports ONNX or TorchScript weights.
 
-## Status
+## Release Status
 
-- ✅ Data preparation pipeline implemented (masking, normalization, padding, slicing, recombination).
-- ✅ Inference API stubs for axial/sagittal/coronal models.
-- ✅ Conversion workspace prepared under `MATLAB_2_pytorch/`.
-- ⛔ MATLAB weights are not yet converted. You must export or supply PyTorch/ONNX weights.
+- ✅ End-to-end data pipeline implemented (masking, normalization, padding, slicing, recombination).
+- ✅ Inference for axial/sagittal/coronal models (ONNX or TorchScript).
+- ✅ Conversion workspace prepared under `matlab_to_pytorch/`.
+- ⛔ MATLAB weights are not included. You must export or supply ONNX/TorchScript weights.
 
-## Key paths
+## Key Paths
 
-- Conversion workspace: `MATLAB_2_pytorch/`
+- Conversion workspace: `matlab_to_pytorch/`
 - PyTorch code: `src/ddseg/`
 - Expected weights (placeholders): `weights/`
 
-## Next steps to complete conversion
+## Installation
 
-1. Export MATLAB `DAGNetwork` models to ONNX or TorchScript.
+```
+python -m pip install -r requirements.txt
+```
+
+Optional (GPU ONNXRuntime):
+
+```
+python -m pip install onnxruntime-gpu
+```
+
+## Conversion Steps
+
+1. Export MATLAB `DAGNetwork` models to ONNX.
 2. Place converted weights under `weights/` with names like `dti_axial.onnx` or `dti_axial.pt`.
 3. Run the pipeline with `scripts/run_ddseg.py`.
 
@@ -31,4 +43,24 @@ Ensure the exported models preserve this channel order.
 MATLAB `semanticseg` returns `allScores`. If your exported model already outputs probabilities, keep `--apply_softmax` disabled.
 If your exported model outputs logits, enable `--apply_softmax` to match MATLAB behavior.
 
-See `MATLAB_2_pytorch/README.md` for the export plan.
+See `matlab_to_pytorch/README.md` for the export plan.
+
+## Quick Start
+
+```
+python scripts/run_ddseg.py \
+  --input_feature_folder /path/to/features \
+  --input_mask_nii /path/to/mask.nii.gz \
+  --parameter_type DTI \
+  --weights_dir /path/to/weights \
+  --output_folder /path/to/output \
+  --device cuda
+```
+
+## Release Notes
+
+See `RELEASE_NOTES.md` for release details and known limitations.
+
+## License
+
+License is not specified yet. Add a LICENSE file if you intend to publish with explicit terms.
