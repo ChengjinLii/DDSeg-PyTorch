@@ -4,9 +4,9 @@ This repository provides a PyTorch implementation of DDSeg. It mirrors the MATLA
 
 This code implements deep learning tissue segmentation method using diffusion MRI data, as described in the following paper:
 
-Fan Zhang, Anna Breger, Kang Ik Kevin Cho, Lipeng Ning, Carl-Fredrik Westin, Lauren O'Donnell, and Ofer Pasternak.
-Deep Learning Based Segmentation of Brain Tissue from Diffusion MRI.
-NeuroImage 2021.
+    Fan Zhang, Anna Breger, Kang Ik Kevin Cho, Lipeng Ning, Carl-Fredrik Westin, Lauren O'Donnell, and Ofer Pasternak.
+    Deep Learning Based Segmentation of Brain Tissue from Diffusion MRI
+    NeuroImage 2021.
 
 ## Release Status
 
