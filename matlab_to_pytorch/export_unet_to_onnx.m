@@ -12,7 +12,22 @@ net = s.net1;
 input_name = net.Layers(1).Name;
 input_size = [input_height, input_width, input_channels];
 
-exportONNXNetwork(net, output_onnx_path, 'InputDataFormats', 'BSSC', 'OutputDataFormats', 'BSSC');
+% Some MATLAB versions do not support InputDataFormats/OutputDataFormats.
+try
+    % Ensure support package bin is on PATH for onnxmex dependencies.
+    try
+        nnet.internal.cnn.onnx.util.addSpkgBinPath;
+    catch
+        % No-op if not available.
+    end
+    exportONNXNetwork(net, output_onnx_path, 'InputDataFormats', 'BSSC', 'OutputDataFormats', 'BSSC');
+catch
+    try
+        nnet.internal.cnn.onnx.util.addSpkgBinPath;
+    catch
+    end
+    exportONNXNetwork(net, output_onnx_path);
+end
 
 fprintf('Exported %s -> %s\n', model_mat_path, output_onnx_path);
 end

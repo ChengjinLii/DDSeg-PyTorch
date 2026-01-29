@@ -17,6 +17,11 @@ def main() -> None:
     parser.add_argument("--weights_dir", required=True)
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--apply_softmax", action="store_true", help="Apply softmax to model outputs")
+    parser.add_argument(
+        "--matlab_prediction_dir",
+        default="",
+        help="Optional: use MATLAB prediction mats (axial/coronal/sagittal) instead of PyTorch inference.",
+    )
     args = parser.parse_args()
 
     cfg = DDSegConfig(
@@ -28,7 +33,8 @@ def main() -> None:
         device=args.device,
         apply_softmax=args.apply_softmax,
     )
-    run_ddseg(cfg)
+    matlab_pred = Path(args.matlab_prediction_dir) if args.matlab_prediction_dir else None
+    run_ddseg(cfg, matlab_prediction_dir=matlab_pred)
 
 
 if __name__ == "__main__":

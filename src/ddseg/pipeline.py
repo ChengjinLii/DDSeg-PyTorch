@@ -9,11 +9,11 @@ import nibabel as nib
 from .config import DDSegConfig
 from .preprocess import masking_and_normalizing, stack_features, split_views
 from .model_loader import load_models
-from .inference import predict_view, combine_views
+from .inference import predict_view, combine_views, load_matlab_predictions
 from .utils import padding_unpadding, load_nii_matlab_like
 
 
-def run_ddseg(cfg: DDSegConfig) -> None:
+def run_ddseg(cfg: DDSegConfig, matlab_prediction_dir: Optional[Path] = None) -> None:
     cfg.output_folder.mkdir(parents=True, exist_ok=True)
 
     feature_maps = masking_and_normalizing(
@@ -25,11 +25,16 @@ def run_ddseg(cfg: DDSegConfig) -> None:
     views = split_views(stacked)
 
     prefix = "dti" if cfg.parameter_type == "DTI" else "mkcurve"
-    models = load_models(cfg.weights_dir, prefix, cfg.device)
-
-    pred_axial = predict_view(models.axial, views["axial"], cfg.apply_softmax)
-    pred_sagittal = predict_view(models.sagittal, views["sagittal"], cfg.apply_softmax)
-    pred_coronal = predict_view(models.coronal, views["coronal"], cfg.apply_softmax)
+    if matlab_prediction_dir is not None:
+        preds = load_matlab_predictions(matlab_prediction_dir.as_posix())
+        pred_axial = preds["axial"]
+        pred_sagittal = preds["sagittal"]
+        pred_coronal = preds["coronal"]
+    else:
+        models = load_models(cfg.weights_dir, prefix, cfg.device)
+        pred_axial = predict_view(models.axial, views["axial"], cfg.apply_softmax)
+        pred_sagittal = predict_view(models.sagittal, views["sagittal"], cfg.apply_softmax)
+        pred_coronal = predict_view(models.coronal, views["coronal"], cfg.apply_softmax)
 
     combined = combine_views(pred_axial, pred_sagittal, pred_coronal)
     prob_maps = combined["prob_maps"]

@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+.DS_Store
+matlab_to_pytorch/weights_export/

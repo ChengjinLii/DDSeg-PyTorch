@@ -30,7 +30,7 @@ def masking_and_normalizing(parameter_folder: Path, mask_file: Path, parameter_t
     feature_list = feature_info["list"]
     feature_range = feature_info["range"]
 
-    mask_img = nib.load(mask_file.as_posix())
+    mask_img = load_nii_matlab_like(mask_file)
     brain_mask = mask_img.get_fdata() > 0
 
     outputs = {}

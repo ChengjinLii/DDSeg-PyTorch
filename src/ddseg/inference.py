@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import numpy as np
 from typing import Dict, List
+from pathlib import Path
+
+import scipy.io as sio
 
 def _softmax(x: np.ndarray) -> np.ndarray:
     exp = np.exp(x - np.max(x, axis=1, keepdims=True))
@@ -35,5 +38,31 @@ def combine_views(pred_axial: np.ndarray, pred_sagittal: np.ndarray, pred_corona
     pred_coronal = np.transpose(pred_coronal, (0, 2, 1, 3))
     prob_sum = pred_axial + pred_sagittal + pred_coronal
     prob_maps = prob_sum / 3.0
-    labels = np.argmax(prob_maps, axis=3).astype(np.int16) - 1
+    # MATLAB subtracts 1 because its indices are 1-based; NumPy argmax is 0-based already.
+    labels = np.argmax(prob_maps, axis=3).astype(np.int16)
     return {"prob_maps": prob_maps, "labels": labels}
+
+
+def _load_prediction_dir(prediction_dir: str) -> np.ndarray:
+    files = sorted(Path(prediction_dir).glob("feat-*.mat"))
+    if not files:
+        raise FileNotFoundError(f"No prediction mats found in {prediction_dir}")
+    # Load first to get shape
+    tmp = sio.loadmat(files[0].as_posix())
+    if "allScores" not in tmp:
+        raise KeyError(f"Missing allScores in {files[0]}")
+    im_sz = tmp["allScores"].shape
+    pred = np.full((im_sz[0], im_sz[1], len(files), im_sz[2]), np.nan, dtype=np.float32)
+    for i, f in enumerate(files):
+        m = sio.loadmat(f.as_posix())
+        pred[:, :, i, :] = m["allScores"].astype(np.float32)
+    return pred
+
+
+def load_matlab_predictions(prediction_root: str) -> Dict[str, np.ndarray]:
+    prediction_root = Path(prediction_root)
+    axial = _load_prediction_dir(prediction_root / "axial")
+    sagittal = _load_prediction_dir(prediction_root / "sagittal")
+    coronal = _load_prediction_dir(prediction_root / "coronal")
+    # Return in the same layout as predict_view outputs: H,W,depth,C for each view.
+    return {"axial": axial, "sagittal": sagittal, "coronal": coronal}

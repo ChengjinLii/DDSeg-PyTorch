@@ -43,6 +43,16 @@ def normalize_vector(vec: np.ndarray) -> np.ndarray:
 
 
 def load_nii_matlab_like(path: Path) -> nib.Nifti1Image:
+    # Match MATLAB load_nii behavior used in DDSeg.
+    # Empirically, mask orientation matches a flipud compared to nibabel output.
     img = nib.load(path.as_posix())
-    # MATLAB load_nii applies xform_nii (reorients using sform/qform).
-    return nib.as_closest_canonical(img)
+    data = img.get_fdata()
+    data = np.flipud(data)
+
+    # Update affine to keep world coordinates consistent after flipud.
+    affine = img.affine.copy()
+    n0 = data.shape[0]
+    affine[:, 0] *= -1
+    affine[:3, 3] += img.affine[:3, 0] * (n0 - 1)
+
+    return nib.Nifti1Image(data, affine, img.header)
