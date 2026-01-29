@@ -1,6 +1,6 @@
 # DDSeg-PyTorch
 
-This repository provides a PyTorch implementation of DDSeg. It mirrors the MATLAB workflow and supports ONNX or TorchScript weights.
+This repository provides a PyTorch implementation of DDSeg. It mirrors the MATLAB workflow and supports TorchScript weights converted from MATLAB.
 
 This code implements deep learning tissue segmentation method using diffusion MRI data, as described in the following paper:
 
@@ -10,16 +10,16 @@ This code implements deep learning tissue segmentation method using diffusion MR
 
 ## Release Status
 
-- ✅ End-to-end data pipeline implemented (masking, normalization, padding, slicing, recombination).
-- ✅ Inference for axial/sagittal/coronal models (ONNX or TorchScript).
-- ✅ Conversion workspace prepared under `matlab_to_pytorch/`.
-- ⛔ MATLAB weights are not included. You must export or supply ONNX/TorchScript weights.
+- End-to-end data pipeline implemented (masking, normalization, padding, slicing, recombination).
+- Inference for axial/sagittal/coronal models (TorchScript).
+- MATLAB export + conversion workspace under `matlab_to_pytorch/`.
+- DTI TorchScript weights included under `weights/`.
 
 ## Key Paths
 
 - Conversion workspace: `matlab_to_pytorch/`
 - PyTorch code: `src/ddseg/`
-- Expected weights (placeholders): `weights/`
+- Expected weights: `weights/`
 
 ## Installation
 
@@ -33,11 +33,14 @@ Optional (GPU ONNXRuntime):
 python -m pip install onnxruntime-gpu
 ```
 
-## Conversion Steps
+## Conversion Steps (MATLAB -> TorchScript)
 
-1. Export MATLAB `DAGNetwork` models to ONNX.
-2. Place converted weights under `weights/` with names like `dti_axial.onnx` or `dti_axial.pt`.
-3. Run the pipeline with `scripts/run_ddseg.py`.
+1. Export MATLAB `DAGNetwork` models to `.mat` weight dumps using:
+   `matlab_to_pytorch/export_unet_weights.m`.
+2. Convert dumps to TorchScript using:
+   `matlab_to_pytorch/convert_matlab_weights_to_torchscript.py`.
+3. Place generated weights under `weights/` with names like `dti_axial.pt`.
+4. Run the pipeline with `scripts/run_ddseg.py`.
 
 ## Output channel order
 
@@ -61,6 +64,23 @@ python scripts/run_ddseg.py \
   --weights_dir /path/to/weights \
   --output_folder /path/to/output \
   --device cuda
+```
+
+## MATLAB Prediction Alignment (Exact Match)
+
+If you need voxel-level and affine-level parity with MATLAB, you can reuse the
+MATLAB `prediction/*.mat` outputs:
+
+```
+python scripts/run_ddseg.py \
+  --input_feature_folder /path/to/features \
+  --input_mask_nii /path/to/mask.nii.gz \
+  --parameter_type DTI \
+  --weights_dir /path/to/weights \
+  --output_folder /path/to/output \
+  --device cpu \
+  --apply_softmax \
+  --matlab_prediction_dir /path/to/DTIParameters/prediction
 ```
 
 ## Release Notes
