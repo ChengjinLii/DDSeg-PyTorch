@@ -70,7 +70,7 @@ python scripts/run_ddseg.py \
 
 Notes:
 - The PyTorch pipeline expects precomputed DTI parameter maps (e.g., exported from 3D Slicer). It does not run Slicer preprocessing itself.
-- For DTI runs, the input feature folder is mirrored to `output_folder/DTI2` to align with the MATLAB folder layout.
+- For DTI runs, the input feature folder is mirrored to `output_folder/DTI` to align with the MATLAB folder layout.
 
 ## MATLAB Prediction Alignment (Exact Match)
 

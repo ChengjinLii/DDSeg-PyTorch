@@ -17,10 +17,10 @@ from .utils import padding_unpadding, load_nii_matlab_like
 def run_ddseg(cfg: DDSegConfig, matlab_prediction_dir: Optional[Path] = None) -> None:
     cfg.output_folder.mkdir(parents=True, exist_ok=True)
     if cfg.parameter_type == "DTI":
-        # Mirror MATLAB-style DTI2 folder in output for alignment.
-        dti2_out = cfg.output_folder / "DTI2"
-        if not dti2_out.exists():
-            shutil.copytree(cfg.input_feature_folder, dti2_out, dirs_exist_ok=True)
+        # Mirror MATLAB-style DTI folder in output for alignment.
+        dti_out = cfg.output_folder / "DTI"
+        if not dti_out.exists():
+            shutil.copytree(cfg.input_feature_folder, dti_out, dirs_exist_ok=True)
 
     feature_maps = masking_and_normalizing(
         cfg.input_feature_folder,
