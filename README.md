@@ -8,6 +8,8 @@ This code implements deep learning tissue segmentation method using diffusion MR
     Deep Learning Based Segmentation of Brain Tissue from Diffusion MRI
     NeuroImage 2021.
 
+MATLAB version (original): https://github.com/zhangfanmark/DDSeg
+
 ## Release Status
 
 - End-to-end data pipeline implemented (masking, normalization, padding, slicing, recombination).

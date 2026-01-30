@@ -8,8 +8,7 @@ dependencies:
   - numpy
   - scipy
   - nibabel
-  - scikit-image
-  - h5py
+  - pynrrd
   - pytorch
   - torchvision
   - pip
