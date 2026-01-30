@@ -4,12 +4,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Optional
 
-ParameterType = Literal["DTI", "MKCurve"]
+ParameterType = Literal["DTI"]
 
 
 @dataclass(frozen=True)
 class DDSegConfig:
-    input_feature_folder: Optional[Path]
     input_mask_nii: Path
     parameter_type: ParameterType
     output_folder: Path

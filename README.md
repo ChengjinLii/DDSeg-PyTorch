@@ -12,7 +12,7 @@ MATLAB version (original): https://github.com/zhangfanmark/DDSeg
 
 ## Release Status
 
-- End-to-end data pipeline implemented (masking, normalization, padding, slicing, recombination).
+- End-to-end DTI pipeline implemented (masking, normalization, padding, slicing, recombination).
 - Inference for axial/sagittal/coronal models (TorchScript).
 - MATLAB export + conversion workspace under `matlab_to_pytorch/`.
 - DTI TorchScript weights included under `weights/`.
@@ -27,12 +27,6 @@ MATLAB version (original): https://github.com/zhangfanmark/DDSeg
 
 ```
 python -m pip install -r requirements.txt
-```
-
-Optional (GPU ONNXRuntime):
-
-```
-python -m pip install onnxruntime-gpu
 ```
 
 ## Conversion Steps (MATLAB -> TorchScript)
@@ -60,40 +54,20 @@ See `matlab_to_pytorch/README.md` for the export plan.
 
 ```
 python scripts/run_ddseg.py \
-  --input_feature_folder /path/to/features \
   --input_mask_nii /path/to/mask.nii.gz \
   --parameter_type DTI \
+  --dwi_nii /path/to/dwi.nii.gz \
+  --bval /path/to/dwi.bval \
+  --bvec /path/to/dwi.bvec \
+  --slicer_base /path/to/Slicer \
+  --slicer_ext /path/to/SlicerDMRI \
   --weights_dir /path/to/weights \
   --output_folder /path/to/output \
   --device cuda
 ```
 
 Notes:
-- For DTI, the pipeline can either:
-  - Generate DTI parameters from raw DWI using 3D Slicer CLI (recommended for MATLAB parity), or
-  - Use precomputed DTI parameter maps.
-- For DTI runs, the feature folder is mirrored or generated under `output_folder/DTI` to align with the MATLAB layout.
-
-## MATLAB Prediction Alignment (Exact Match)
-
-If you need voxel-level and affine-level parity with MATLAB, you can reuse the
-MATLAB `prediction/*.mat` outputs:
-
-```
-python scripts/run_ddseg.py \
-  --input_feature_folder /path/to/features \
-  --input_mask_nii /path/to/mask.nii.gz \
-  --parameter_type DTI \
-  --weights_dir /path/to/weights \
-  --output_folder /path/to/output \
-  --device cpu \
-  --apply_softmax \
-  --matlab_prediction_dir /path/to/DTIParameters/prediction
-```
-
-## Release Notes
-
-See `RELEASE_NOTES.md` for release details and known limitations.
+- DTI parameters are generated from raw DWI using 3D Slicer CLI and written to `output_folder/DTI`.
 
 ## License
 
