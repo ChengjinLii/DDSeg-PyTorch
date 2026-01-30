@@ -81,7 +81,3 @@ Before running, replace these with your local paths:
 
 Notes:
 - DTI parameters are generated from raw DWI using 3D Slicer CLI and written to `output_folder/DTI`.
-
-## License
-
-License is not specified yet. Add a LICENSE file if you intend to publish with explicit terms.
