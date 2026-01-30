@@ -32,17 +32,6 @@ class TorchScriptModel:
 
 
 @dataclass
-class OnnxRuntimeModel:
-    session: "onnxruntime.InferenceSession"
-    input_name: str
-    input_layout: str = "NHWC"
-    output_layout: str = "NHWC"
-
-    def forward(self, x: np.ndarray) -> np.ndarray:
-        return self.session.run(None, {self.input_name: x})[0]
-
-
-@dataclass
 class ModelBundle:
     axial: InferenceModel
     sagittal: InferenceModel
@@ -57,26 +46,8 @@ def load_torch_model(path: Path, device: str) -> TorchScriptModel:
     return TorchScriptModel(module=module, device=device)
 
 
-def load_onnx_model(path: Path) -> OnnxRuntimeModel:
-    if not path.exists():
-        raise FileNotFoundError(f"Missing model: {path}")
-    import onnxruntime  # lazy import
-
-    providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
-    available = onnxruntime.get_available_providers()
-    session = onnxruntime.InferenceSession(
-        path.as_posix(),
-        providers=[p for p in providers if p in available],
-    )
-    input_name = session.get_inputs()[0].name
-    return OnnxRuntimeModel(session=session, input_name=input_name)
-
-
 def _pick_model(weights_dir: Path, base: str, device: str) -> InferenceModel:
-    onnx_path = weights_dir / f"{base}.onnx"
     pt_path = weights_dir / f"{base}.pt"
-    if onnx_path.exists():
-        return load_onnx_model(onnx_path)
     return load_torch_model(pt_path, device)
 
 

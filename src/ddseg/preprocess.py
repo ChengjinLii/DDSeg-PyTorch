@@ -35,10 +35,7 @@ def masking_and_normalizing(parameter_folder: Path, mask_file: Path, parameter_t
 
     outputs = {}
     for feat, (low, high) in zip(feature_list, feature_range):
-        if parameter_type == "MKCurve":
-            path = parameter_folder / f"{feat}.nii.gz"
-        else:
-            path = parameter_folder / f"{feat}.nrrd"
+        path = parameter_folder / f"{feat}.nrrd"
         param_map = load_parameter_map(path)
         param_map[~brain_mask] = np.nan
         param_map[param_map < low] = low

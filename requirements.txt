@@ -4,4 +4,3 @@ nibabel
 pynrrd
 torch
 torchvision
-onnxruntime

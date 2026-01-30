@@ -13,4 +13,3 @@ dependencies:
   - torchvision
   - pip
   - pip:
-      - onnxruntime
