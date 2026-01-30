@@ -29,6 +29,13 @@ MATLAB version (original): https://github.com/zhangfanmark/DDSeg
 python -m pip install -r requirements.txt
 ```
 
+Or use conda:
+
+```
+conda env create -f environment.yml
+conda activate DDSeg
+```
+
 ## Conversion Steps (MATLAB -> TorchScript)
 
 1. Export MATLAB `DAGNetwork` models to `.mat` weight dumps using:
@@ -42,13 +49,6 @@ python -m pip install -r requirements.txt
 
 The MATLAB pipeline expects the class scores ordered as: background, WM, GM, CSF.
 Ensure the exported models preserve this channel order.
-
-## Softmax handling
-
-MATLAB `semanticseg` returns `allScores`. If your exported model already outputs probabilities, keep `--apply_softmax` disabled.
-If your exported model outputs logits, enable `--apply_softmax` to match MATLAB behavior.
-
-See `matlab_to_pytorch/README.md` for the export plan.
 
 ## Quick Start
 
