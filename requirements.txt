@@ -1,8 +1,7 @@
 numpy
 scipy
 nibabel
-scikit-image
-h5py
+pynrrd
 torch
 torchvision
 onnxruntime
