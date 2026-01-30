@@ -16,6 +16,16 @@ def _launcher(cli: Path, slicer_exe: Optional[Path]) -> str:
     return _quote(cli)
 
 
+def _find_slicer_lib_dir(slicer_base: Path) -> Path:
+    slicer_lib = slicer_base / "lib"
+    if not slicer_lib.exists():
+        raise FileNotFoundError(f"Missing Slicer lib directory: {slicer_lib}")
+    candidates = sorted(p for p in slicer_lib.iterdir() if p.is_dir() and p.name.startswith("Slicer-"))
+    if not candidates:
+        raise FileNotFoundError(f"No Slicer-* directory under {slicer_lib}")
+    return candidates[0]
+
+
 def run_dti_feature_extraction(
     nii_file: Path,
     bval_file: Path,
@@ -30,15 +40,16 @@ def run_dti_feature_extraction(
         return
 
     if slicer_base is None:
-        slicer_base = Path(r"C:\Users\2\AppData\Local\slicer.org\Slicer 5.6.2")
+        raise ValueError("slicer_base is required for DTI feature extraction.")
     if slicer_ext is None:
-        slicer_ext = slicer_base / "slicer.org" / "Extensions-32448" / "SlicerDMRI"
+        raise ValueError("slicer_ext is required for DTI feature extraction.")
 
-    dwi_convert = slicer_base / "lib" / "Slicer-5.6" / "cli-modules" / "DWIConvert.exe"
-    dti_est = slicer_ext / "lib" / "Slicer-5.6" / "cli-modules" / "DWIToDTIEstimation.exe"
-    dti_scalar = slicer_ext / "lib" / "Slicer-5.6" / "cli-modules" / "DiffusionTensorScalarMeasurements.exe"
+    slicer_lib_dir = _find_slicer_lib_dir(slicer_base)
+    dwi_convert = slicer_lib_dir / "cli-modules" / "DWIConvert"
+    dti_est = slicer_ext / "lib" / slicer_lib_dir.name / "cli-modules" / "DWIToDTIEstimation"
+    dti_scalar = slicer_ext / "lib" / slicer_lib_dir.name / "cli-modules" / "DiffusionTensorScalarMeasurements"
 
-    slicer_exe = slicer_base / "Slicer.exe"
+    slicer_exe = slicer_base / "Slicer"
 
     dwi_nrrd = output_folder / "DWI.nrrd"
     dti_nrrd = output_folder / "DTI.nrrd"

@@ -66,6 +66,19 @@ python scripts/run_ddseg.py \
   --device cuda
 ```
 
+## Paths You Must Set
+
+Before running, replace these with your local paths:
+
+- `--input_mask_nii`
+- `--dwi_nii`
+- `--bval`
+- `--bvec`
+- `--slicer_base`
+- `--slicer_ext`
+- `--weights_dir`
+- `--output_folder`
+
 Notes:
 - DTI parameters are generated from raw DWI using 3D Slicer CLI and written to `output_folder/DTI`.
 
